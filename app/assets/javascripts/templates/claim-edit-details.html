@@ -1,0 +1,102 @@
+<ng-form name="detailsForm" class="scrollable" ng-controller="ClaimEditDetailsController">
+  <div class="scrollable-content section">
+    <div class="panel" id="details">
+      <div class="panel-body">
+        <div class="alert alert-danger" ng-show="submitted && detailsForm.$invalid">
+          Please provide required details information or remove missing details below before submitting.
+        </div>
+
+        <div class="row" ng-show="isGenerateVisible">
+          <div class="col-sm-12">
+            <button type="button" class="btn btn-info btn-lg btn-block" ng-click="generate()">
+              <i class="fa fa-cogs"></i> Generate codes
+            </button>
+            <br>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-xs-12" ng-class="{'has-error': submitted && detailsForm.daily_details_length.$invalid}">
+            <input class="hide" type="number" ng-model="claim.daily_details.length" name="daily_details_length" min="1" required>
+            <div ng-messages="detailsForm.daily_details_length.$error" ng-show="submitted">
+              <p class="help-block" ng-message="required">at least one code is required</p>
+            </div>
+          </div>
+        </div>
+
+        <div ng-repeat="dailyDetail in claim.daily_details | unique : 'day'">
+          <ng-form name="detailForm" ng-repeat="detail in claim.daily_details | filter : { day: dailyDetail.day }">
+            <div class="row">
+              <div class="col-sm-4 col-xs-12" ng-class="{'has-error': (detailForm.day.$dirty || submitted) && detailForm.day.$invalid}">
+                <label class="visible-xs control-label" ng-show="$first">Day</label>
+                <input type="date" ng-model="detail.day" name="day" class="form-control input-lg" mb-date ng-show="$first" required>
+                <div ng-messages="detailForm.day.$error" ng-show="$first && submitted">
+                  <p class="help-block" ng-message="required">is missing</p>
+                </div>
+              </div>
+
+              <div class="col-xs-12 visible-xs">&nbsp;</div>
+
+              <div class="col-sm-7 col-xs-12" ng-class="{'has-error': (detailForm.code.$dirty || submitted) && detailForm.code.$invalid}">
+                <label class="visible-xs control-label">Code</label>
+                <input type="text" ng-model="detail.code" name="code" class="form-control input-lg" required>
+                <div ng-messages="detailForm.code.$error" ng-show="submitted">
+                  <p class="help-block" ng-message="required">is missing</p>
+                </div>
+              </div>
+
+              <div class="col-xs-12 visible-xs">&nbsp;</div>
+
+              <div class="col-sm-1 col-xs-12">
+                <button type="button" class="btn btn-danger btn-lg btn-block" ng-click="remove(detail)">
+                  <span class="hidden-xs"><i class="fa fa-times"></i></span>
+                  <span class="visible-xs"><i class="fa fa-times"></i> Remove code</span>
+                </button>
+                <br>
+              </div>
+            </div>
+          </ng-form>
+
+          <div class="row">
+            <div class="col-sm-offset-11 col-sm-1 col-sx-12">
+              <button type="button" class="btn btn-success btn-lg btn-block" ng-click="add({ day: dailyDetail.day })">
+                <span class="hidden-xs"><i class="fa fa-plus"></i></span>
+                <span class="visible-xs"><i class="fa fa-plus"></i> Add a new code</span>
+              </button>
+              <br>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-12">
+            <button type="button" class="btn btn-success btn-lg btn-block" ng-click="add({ day: null })">
+              <i class="fa fa-plus"></i> Add a new day
+            </button>
+          </div>
+        </div>
+
+        <div class="form-group row" ng-class="{'has-error': (detailForm.consult_time_in.$dirty || submitted) && detailForm.consult_time_in.$invalid}" ng-if="isTimeVisible()">
+          <label for="claim-consult-time-in" class="control-label col-xs-12">Time in</label>
+          <div class="form-control-wrapper col-xs-12">
+            <input type="time" name="consult_time_in" ng-model="claim.consult_time_in" class="form-control input-lg" id="claim-consult-time-in" mb-time required>
+            <div ng-messages="detailForm.consult_time_in.$error" ng-show="submitted">
+              <p class="help-block" ng-message="required">is missing</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group row" ng-class="{'has-error': (detailForm.consult_time_out.$dirty || submitted) && detailForm.consult_time_out.$invalid}" ng-if="isTimeVisible()">
+          <label for="claim-consult-time-out" class="control-label col-xs-12">Time out</label>
+          <div class="form-control-wrapper col-xs-12">
+            <input type="time" name="consult_time_out" ng-model="claim.consult_time_out" class="form-control input-lg" id="claim-consult-time-out" mb-time required>
+            <div ng-messages="detailForm.consult_time_out.$error" ng-show="submitted">
+              <p class="help-block" ng-message="required">is missing</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</ng-form>

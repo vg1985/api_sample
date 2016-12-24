@@ -1,0 +1,15 @@
+development:
+  adapter: postgresql
+  database: mo_billing_development
+
+test:
+  adapter: postgresql
+  database: mo_billing_test
+
+staging:
+  adapter: postgresql
+  database: mo_billing_staging
+
+production:
+  adapter: postgresql
+  database: mo_billing_production
